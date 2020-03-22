@@ -22,7 +22,7 @@ class Player:
         check_value(self._health, int, 'health', self._health > 0 and self._health <= self._max_health)
         # mana setting
         self._mana = kwargs.get("mana", self._max_mana)    
-        check_value(self._mana, int, 'mana', self._mana >= 0 and self._mana <= self._max_mana)
+        check_value(self._mana, int, 'mana', self._mana <= self._max_mana)
         # armor setting
         self._armor = kwargs.get("armor", 0)
         check_value(self._armor, int, 'armor', self._armor >= 0)
@@ -72,8 +72,10 @@ class Player:
         self._armor = 0
 
     def next_round(self):
-        self._mana += self._mana_regen
-        self._health -= self._damage_over_time
+        if self.is_alive:
+            self._mana += self._mana_regen
+            self._health -= self._damage_over_time
+            self._health += self._mana if self._mana < 0 else 0
 
     @classmethod
     def remove_name(cls, name):
