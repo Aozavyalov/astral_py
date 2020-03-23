@@ -27,10 +27,18 @@ class PlayerTest(unittest.TestCase):
         p = Player("lol", health=1, mana=1)
         self.assertEqual(p._health, 1)
         self.assertEqual(p._mana, 1)
+
+    def tearDown(self):
         Player.remove_name("lol")
 
     def test_healing(self):
-        pass
+        p = Player("lol", health=1)
+        p.heal(10)
+        self.assertEqual(p._health, 11)
+        p.heal(100)
+        self.assertEqual(p._health, 30)
+        with self.assertRaises(ValueError):
+            p.heal(-1)
 
     def test_damaging(self):
         pass
