@@ -49,7 +49,7 @@ class PlayerTest(unittest.TestCase):
         p.damage(14)
         self.assertEqual(p._health, -10)        
         with self.assertRaises(ValueError):
-                p.damage(-1)    
+            p.damage(-1)    
 
     def test_next_round(self):
         pass
