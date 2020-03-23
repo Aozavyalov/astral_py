@@ -74,11 +74,18 @@ class Player:
     def remove_armor(self):
         self._armor = 0
 
+    @check_int_args
+    def add_mana(self, val):
+        self._mana += val
+
+    @check_int_args
+    def burn_mana(self, val):
+        self._mana -= val
+
     def next_round(self):
         if self.is_alive:
-            self._mana += self._mana_regen
             self._health -= self._damage_over_time
-            self._health += self._mana if self._mana < 0 else 0
+            self._health += 2*self._mana if self._mana < 0 else 0  # if mana < 0 then damage 2*mana
             removed = 0
             for i in range(len(self._effects)):  # decrease counters for ending
                 if self._effects[i-removed]['ends'] == 0:
@@ -86,6 +93,7 @@ class Player:
                     removed += 1
                 else:
                     self._effects[i-removed]['ends'] -= 1
+            self._mana += self._mana_regen  # regen for next round
         else:
             self._spells = dict()
             self._effects = list()
