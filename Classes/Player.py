@@ -2,6 +2,7 @@ import logging
 
 from Classes.utils import check_int_args, check_value
 
+
 class Player:
     _names = set()
     def __init__(self, name, **kwargs):
@@ -33,6 +34,8 @@ class Player:
         self._damage_over_time = kwargs.get("damage_over_time", 0)
         check_value(self._damage_over_time, int, 'damage_over_time', self._damage_over_time >= 0)
         Player._names.add(name)  # after all checks save players name
+        self._effects = list()  # [{"idx": effect_idx, "until_end": rounds_until_end, "dispelable": is_dispelable}, ...]
+        self._spells = dict()  # {spell_idx: num_of_that_spells, ...}
 
     def kill(self):
         self._health = 0
@@ -76,6 +79,16 @@ class Player:
             self._mana += self._mana_regen
             self._health -= self._damage_over_time
             self._health += self._mana if self._mana < 0 else 0
+            removed = 0
+            for i in range(len(self._effects)):  # decrease counters for ending
+                if self._effects[i-removed]['ends'] == 0:
+                    del self._effects[i-removed]
+                    removed += 1
+                else:
+                    self._effects[i-removed]['ends'] -= 1
+        else:
+            self._spells = dict()
+            self._effects = list()
 
     @classmethod
     def remove_name(cls, name):
