@@ -19,7 +19,7 @@ class Player:
         self._health = kwargs.get("health", self._max_health)
         check_value(self._health, int, 'health', self._health > 0 and self._health <= self._max_health)
         # mana setting
-        self._mana = kwargs.get("mana", self.max_mana)    
+        self._mana = kwargs.get("mana", int(self.max_mana * 0.75))    
         check_value(self._mana, int, 'mana', self._mana <= self.max_mana)
         # armor setting
         self._armor = kwargs.get("armor", 0)
@@ -43,7 +43,7 @@ class Player:
 
     @property
     def max_mana(self):
-        return self._max_health * 10
+        return self._max_health + 10
 
     def reborn(self, health):
         self._health = health
