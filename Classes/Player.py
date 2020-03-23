@@ -31,7 +31,11 @@ class Player:
         self._damage_over_time = kwargs.get("damage_over_time", 0)
         check_value(self._damage_over_time, int, 'damage_over_time', self._damage_over_time >= 0)
         Player._names.add(name)  # after all checks save players name
-        self._effects = list()  # [{"idx": effect_idx, "until_end": rounds_until_end, "dispelable": is_dispelable}, ...]
+        self._effects = list()  # [{"idx": effect_idx, -- an index of effect
+                                #   "until_end": rounds_until_end,  -- rounds until it dispells
+                                #   "dispelable": is_dispelable, -- is dispellable by other effect
+                                #   "until_cast": rounds_until_cast -- for effect that not casted yet
+                                # }, ...]
         self._spells = dict()  # {spell_idx: num_of_that_spells, ...}
 
     def kill(self):
@@ -90,7 +94,9 @@ class Player:
             self._health += 2*self._mana if self._mana < 0 else 0  # if mana < 0 then damage 2*mana
             removed = 0
             for i in range(len(self._effects)):  # decrease counters for ending
-                if self._effects[i-removed]['ends'] == 0:
+                if self._effects[i-removed]['until_cast'] > 0:
+                    self._effects[i-removed]['until_cast'] -= 1
+                elif self._effects[i-removed]['ends'] == 0:
                     del self._effects[i-removed]
                     removed += 1
                 else:
