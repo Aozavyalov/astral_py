@@ -96,7 +96,7 @@ class Player:
     def next_round(self):
         if self.is_alive:
             self._health -= self._damage_over_time
-            self._health += 2*self._mana if self._mana < 0 else 0  # if mana < 0 then damage 2*mana
+            self._health -= -2*self._mana if self._mana < 0 else 0  # if mana < 0 then damage 2*mana
             removed = 0
             for i in range(len(self._effects)):  # decrease counters for ending
                 if self._effects[i-removed]['until_cast'] > 0:
