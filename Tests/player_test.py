@@ -41,13 +41,28 @@ class PlayerTest(unittest.TestCase):
             p.heal(-1)
 
     def test_damaging(self):
-        pass
+        p = Player("lol", health=30)
+        p.damage(16)
+        self.assertEqual(p._health, 14)
+        p.damage(10)
+        self.assertEqual(p._health, 4)
+        p.damage(14)
+        self.assertEqual(p._health, -10)        
+        with self.assertRaises(ValueError):
+            p.damage(-1)    
 
     def test_next_round(self):
         pass
 
     def test_armor(self):
-        pass
+        p = Player("lol", health=30)
+        p.add_armor(10)
+        p.damage(10)
+        self.assertEqual(p._health, 30)
+        p.damage(25)
+        self.assertEqual(p._health, 15)   
+        with self.assertRaises(ValueError):
+            p.add_armor(-1)
 
     def test_mana(self):
         pass
