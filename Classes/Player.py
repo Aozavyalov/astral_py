@@ -101,11 +101,11 @@ class Player:
             for i in range(len(self._effects)):  # decrease counters for ending
                 if self._effects[i-removed]['until_cast'] > 0:
                     self._effects[i-removed]['until_cast'] -= 1
-                elif self._effects[i-removed]['ends'] == 0:
+                elif self._effects[i-removed]['until_end'] == 0:
                     del self._effects[i-removed]
                     removed += 1
                 else:
-                    self._effects[i-removed]['ends'] -= 1
+                    self._effects[i-removed]['until_end'] -= 1
             self._mana += self._mana_regen  # regen for next round
         else:
             self._spells = dict()
