@@ -24,3 +24,6 @@ class Team:
             if p.name == player_name:
                 return True
         return False
+
+    def get_names(self):
+        return set([p.name for p in self._players])
