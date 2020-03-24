@@ -47,12 +47,27 @@ class PlayerTest(unittest.TestCase):
         p.damage(10)
         self.assertEqual(p._health, 4)
         p.damage(14)
-        self.assertEqual(p._health, -10)        
+        self.assertEqual(p._health, -10)
         with self.assertRaises(ValueError):
-            p.damage(-1)    
+            p.damage(-1)
 
     def test_next_round(self):
-        pass
+        p = Player("lol", health=30, mana=-5)
+        p.damage(10)
+        self.assertEqual(p._health, 20)
+        p.heal(10)
+        self.assertEqual(p._health, 30)
+        p.burn_mana(5)
+        self.assertEqual(p._mana, -10)
+        p.add_mana(15)
+        self.assertEqual(p._mana, 5)
+        p.burn_mana(15)
+        self.assertEqual(p._mana, -10)
+        p.heal(10)
+        p._damage_over_time = 5
+        p.next_round()
+        self.assertEqual(p._health, 5)
+        
 
     def test_armor(self):
         p = Player("lol", health=30)
@@ -60,7 +75,7 @@ class PlayerTest(unittest.TestCase):
         p.damage(10)
         self.assertEqual(p._health, 30)
         p.damage(25)
-        self.assertEqual(p._health, 15)   
+        self.assertEqual(p._health, 15)
         with self.assertRaises(ValueError):
             p.add_armor(-1)
 
