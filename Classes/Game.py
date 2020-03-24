@@ -1,7 +1,9 @@
 import logging
 
-from Classes.Team import Team
+from Classes.spells import SPELLS
 from Classes.StandartIO import StandartIO
+from Classes.Team import Team
+
 
 class Game:
     def __init__(self, teams_num=2, players_in_team=1,
@@ -31,9 +33,36 @@ class Game:
         # start of the game
         for i in range(self._rounds_num):
             # get all moves
+            moves = self.get_moves()
             # precast time
             # cast time
             # aftercast time
             # check if there is one alive team
-            pass
         # end of the game
+
+    def get_moves(self):
+        moves = set()
+        alive_names = {t.get_alive_players_names() for t in self._teams}
+        all_names = {t.get_names() for t in self._teams}
+        while set(moves.keys()) != alive_names:
+            # getting a move
+            try:
+                move = self._io.get_move()
+            except ValueError as e:
+                # TODO: add output
+                print(e)
+                continue
+            # check if it is correct
+            caster = next(iter(move))
+            if not caster in alive_names:
+                print(f"Wrong caster's name {caster}")
+                continue
+            elif move[caster]['spell'] not in SPELLS:
+                print(f"There is no spell {move[caster]['spell']}")
+                continue
+            elif move[caster]['target'] and move[caster]['target'] not in all_names:  # TODO: add mass spell check
+                print(f"Wrong target's name {move[caster]['target']}")
+                continue
+            else:
+                moves.update(move)
+        return moves
