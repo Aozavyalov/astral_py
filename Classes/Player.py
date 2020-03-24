@@ -1,5 +1,6 @@
 import logging
 
+from Classes.spells import SPELLS
 from Classes.utils import check_int_args, check_value
 
 
@@ -105,6 +106,23 @@ class Player:
         else:
             self._spells = dict()
             self._effects = list()
+
+    def add_spells(self, spells_idx: list):
+        for s in spells_idx:
+            if s not in SPELLS:
+                raise ValueError(f"There is no spell with idx {s}")
+            elif s in self._spells:
+                self._spells[s] += 1
+            else:
+                self._spells[s] = 1
+
+    def add_effect(self, spell_idx, until_end, until_cast=0, is_dispelable=True):
+        self._effects.append({
+            "idx": spell_idx,
+            "until_end": until_end,
+            "until_cast": until_cast,
+            "is_dispellable": is_dispelable
+        })
 
     @classmethod
     def remove_name(cls, name):
