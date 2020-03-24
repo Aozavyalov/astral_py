@@ -55,14 +55,22 @@ class PlayerTest(unittest.TestCase):
         p = Player("lol", health=30, mana=-5)
         p._damage_over_time = 5
         p.next_round()
+        self.assertEqual(p._mana, -4)
         self.assertEqual(p._health, 15)
         p.add_mana(5)
         p.next_round()
         self.assertEqual(p._health, 10)
+        self.assertEqual(p._mana, 2)
         p._damage_over_time = 0
         p._mana = -5
         p.next_round()
         self.assertEqual(p._health, 0)
+        self.assertEqual(p._mana, -4)
+        p._health = 30
+        p._mana = -5
+        p._mana_regen = 3
+        p.next_round()
+        self.assertEqual(p._mana, -2)
 
     def test_armor(self):
         p = Player("lol", health=30)
