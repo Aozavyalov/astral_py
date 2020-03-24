@@ -39,6 +39,10 @@ class Player:
                                 # }, ...]
         self._spells = dict()  # {spell_idx: num_of_that_spells, ...}
 
+    @property
+    def name(self):
+        return self._name
+
     def kill(self):
         self._health = 0
 
