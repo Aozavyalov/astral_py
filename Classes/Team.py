@@ -26,4 +26,7 @@ class Team:
         return False
 
     def get_names(self):
-        return set([p.name for p in self._players])
+        return {p.name for p in self._players]}
+
+    def get_alive_players_names(self):
+        return {p.name for p in self._players if p.is_alive}
