@@ -31,18 +31,27 @@ class Spell(BaseMagic):
     )
 
     def __init__(self, idx: int, name: str, func: function,
-                 priority: int, target: str, is_directed: bool, spell_type: str, mult_constant=10):
+                 priority: int, target: str, is_directed: bool, spell_type: str,
+                 level: int, mana_req: int, mult_constant=10):
         super().__init__(time=mult_constant*priority, idx, name, func)
 
         check_value(priority, int, 'priority', priority >= 0)
         check_value(target, str, 'target', target in Spell.possible_targets)
         check_value(is_directed, bool, 'is_directed')
         check_value(spell_type, str, 'spell_type', spell_type in Spell.spell_types)
+        check_value(level, int, 'level', level > 0 and level < 4)
+        check_value(mana_req, int, 'mana_req', mana_req > 0)
 
         self._priority = priority
         self._target = target
         self._is_directed = is_directed
         self._type = spell_type
+        self._level = level
+        self._mana_req = mana_req
+
+    @property
+    def priority(self):
+        return priority
 
 
 class SimpleEffect(BaseMagic):
