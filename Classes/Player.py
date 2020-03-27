@@ -1,6 +1,7 @@
 import logging
 
 from Classes.spells import SPELLS
+from Classes.effects import EFFECTS
 from Classes.utils import check_int_args, check_value
 
 
@@ -33,8 +34,8 @@ class Player:
         check_value(self._damage_over_time, int, 'damage_over_time', self._damage_over_time >= 0)
         Player._names.add(name)  # after all checks save players name
         self._effects = list()  # [{"idx": effect_idx, -- an index of effect
-                                #   "until_end": rounds_until_end,  -- rounds until it dispells
-                                #   "dispelable": is_dispelable, -- is dispellable by other effect
+                                #   "until_end": rounds_until_end,  -- rounds until it dispels
+                                #   "dispelable": is_dispelable, -- is dispelable by other effect
                                 #   "until_cast": rounds_until_cast -- for effect that not casted yet
                                 # }, ...]
         self._spells = dict()  # {spell_idx: num_of_that_spells, ...}
@@ -121,13 +122,25 @@ class Player:
                 self._spells[s] = 1
 
     def add_effect(self, spell_idx, until_end, until_cast=0, is_dispelable=True):
-        self._effects.append({
-            "idx": spell_idx,
-            "until_end": until_end,
-            "until_cast": until_cast,
-            "is_dispellable": is_dispelable
-        })
+        if spell_idx in EFFECTS:
+            self._effects.append({
+                "idx": spell_idx,
+                "until_end": until_end,
+                "until_cast": until_cast,
+                "is_dispelable": is_dispelable
+            })
 
+    def dispel(self, idx, is_strong=False):
+        if len(self._effects) < idx + 1:
+            raise KeyError(f"There are only {len(self._effects)} effects, can't dispel {idx}!")
+        e = self._effects[idx]
+        if e["dispelable"] or EFFECTS[e["idx"]].is_dispelable or is_strong:
+            del self._effects[idx]
+
+    def dispel_all(self, is_strong=False):
+        for i in range(len(self._effects)):
+            self.dispel(i, is_strong)
+    
     @classmethod
     def remove_name(cls, name):
         if name in cls._names:
