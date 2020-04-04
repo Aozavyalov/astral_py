@@ -32,4 +32,4 @@ class Team(set):
 
     @staticmethod
     def create_team(name, players_names, hp, max_hp, mana):
-        return Team(name, *{Player(n, health=hp, max_health=max_hp, mana=mana)})
+        return Team(name, *{Player(name, health=hp, max_health=max_hp, mana=mana)})
