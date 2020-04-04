@@ -52,6 +52,10 @@ class Player:
         return self._health > 0
 
     @property
+    def is_active(self):
+        return self.is_alive  #TODO: add other possibilities
+
+    @property
     def max_mana(self):
         return self._max_health + 10
 
@@ -140,6 +144,9 @@ class Player:
     def dispel_all(self, is_strong=False):
         for i in range(len(self._effects)):
             self.dispel(i, is_strong)
+
+    def get_effects_indexes(self):
+        return [e["idx"] for e in self._effects]
     
     @classmethod
     def remove_name(cls, name):
