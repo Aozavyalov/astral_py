@@ -33,6 +33,7 @@ class Game:
         for i in range(self._rounds_num):
             # get all moves
             moves = self.get_moves()
+            print(moves)
             # precast time
             # cast time
             # aftercast time
@@ -40,28 +41,41 @@ class Game:
         # end of the game
 
     def get_moves(self):
-        moves = set()
-        alive_names = {t.get_alive_players_names() for t in self._teams}
-        all_names = {t.get_names() for t in self._teams}
-        while set(moves.keys()) != alive_names:
+        moves = dict()
+        all_names = self.get_players_names()
+        active_names = self.get_players_names(True)
+        while {*moves} != active_names:
             # getting a move
             try:
-                move = self._io.get_move()
+                caster, spell, target = self._io.get_move()
             except ValueError as e:
                 # TODO: add output
                 print(e)
                 continue
-            # check if it is correct
-            caster = next(iter(move))
-            if not caster in alive_names:
-                print(f"Wrong caster's name {caster}")
-                continue
-            elif move[caster]['spell'] not in SPELLS:
-                print(f"There is no spell {move[caster]['spell']}")
-                continue
-            elif move[caster]['target'] and move[caster]['target'] not in all_names:  # TODO: add mass spell check
-                print(f"Wrong target's name {move[caster]['target']}")
-                continue
+            # TODO: add autotarget
+            # check caster
+            if caster not in all_names:
+                print(f"Caster {caster} doesn't exist")
+            elif caster not in active_names:
+                print(f"Caster {caster} can't move now")
+            # check spell
+            elif spell not in SPELLS:
+                print(f"There is no spell {spell}")
+            # TODO: check target
             else:
-                moves.update(move)
+                moves[caster] = {"spell": spell, "target" : target}
         return moves
+
+    def get_players_names(self, only_active=False):
+        """Returns names of all players. If only_active is True, returns names for active players.
+        
+        Args:
+            only_active (bool, optional): If it is True, returns only names of active players. Defaults to False.
+        
+        Returns:
+            set: Names of players from all teams.
+        """
+        names = set()
+        for t in self._teams:
+            names.update({p.name for p in t if not only_active or (only_active and p.is_active)})
+        return names
