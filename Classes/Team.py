@@ -31,5 +31,5 @@ class Team(set):
         return {p for p in self if p.is_active}
 
     @staticmethod
-    def create_team(name, players_names, max_hp, mana):
-        return Team(name, *{Player(n, max_health=max_hp, mana=mana)})
+    def create_team(name, players_names, hp, max_hp, mana):
+        return Team(name, *{Player(n, health=hp, max_health=max_hp, mana=mana)})
