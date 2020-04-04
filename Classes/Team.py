@@ -3,8 +3,8 @@ import logging
 from Classes.Player import Player
 
 class Team(set):
-    def __init__(self, name, *players):
-        super().__init__(*players)
+    def __init__(self, name, players):
+        super().__init__(players)
         self._logger = logging.getLogger()
         self._name = name
 
@@ -31,5 +31,5 @@ class Team(set):
         return {p for p in self if p.is_active}
 
     @staticmethod
-    def create_team(name, players_names, hp, max_hp, mana):
-        return Team(name, *{Player(name, health=hp, max_health=max_hp, mana=mana)})
+    def create_team(team_name, players_names, hp, max_hp, mana):
+        return Team(team_name, {Player(p_name, health=hp, max_health=max_hp, mana=mana) for p_name in players_names})
