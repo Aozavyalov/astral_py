@@ -2,28 +2,34 @@ import logging
 
 from Classes.Player import Player
 
-class Team:
-    def __init__(self, name, players_names, start_hp, start_mp):
+class Team(set):
+    def __init__(self, name, *players):
+        super().__init__(*players)
         self._logger = logging.getLogger()
         self._name = name
-        self._players = set()
-        for name in players_names:
-            self._players.add(Player(name, max_health=start_hp, mana=start_mp))
 
     def __getitem__(self, player_name):
-        for p in self._players:
+        for p in self:
             if p.name == player_name:
                 return p
         raise KeyError(f"There is no player {player_name} in {self._name} team!")
 
-    def __len__(self):
-        return len(self._players)
+    def __hash__(self):
+        return hash(self._name)  # a name must be unique
 
-    def __contains__(self, player_name):
-        for p in self._players:
-            if p.name == player_name:
-                return True
-        return False
+    def __eq__(self, other):
+        return isinstance(other, Team) and self._name == other.name
 
-    def get_names(self, only_alive=False):
-        return {p.name for p in self._players if not only_alive or (only_alive and p.is_alive)}
+    def __repr__(self):
+        return f"<{self._name}: {', '.join({p.name for p in self})}>"
+
+    @property
+    def name(self):
+        return self._name
+
+    def get_active(self):
+        return {p for p in self if p.is_active}
+
+    @staticmethod
+    def create_team(name, players_names, max_hp, mana):
+        return Team(name, *{Player(n, max_health=max_hp, mana=mana)})
